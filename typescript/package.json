@@ -1,0 +1,17 @@
+{
+  "name": "utility",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build": "rm -rf ./build && npx tsc",
+    "testlocal": "npm run build && node build/test-ignore.js"
+  },
+  "author": "Ken Ma",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "@types/node": "^20.6.0"
+  }
+}
