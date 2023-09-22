@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "build": "rm -rf ./build && npx tsc",
-    "testlocal": "npm run build && node build/test-ignore.js"
+    "testlocal": "npm run build -- -p tsconfig.test.json && node build/test-ignore.js"
   },
   "author": "Ken Ma",
   "license": "ISC",
