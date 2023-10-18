@@ -1,0 +1,59 @@
+{
+  // Place your earnest-web workspace snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and
+  // description. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope
+  // is left empty or omitted, the snippet gets applied to all languages. The prefix is what is
+  // used to trigger the snippet and the body will be expanded and inserted. Possible variables are:
+  // $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders.
+  // Placeholders with the same ids are connected.
+  // Example:
+  "simple template for graphql fragment": {
+    "scope": "typescript, javascript",
+    "prefix": "fragment graphql",
+    "body": [
+      "import { graphql } from 'gatsby'",
+
+      "export const ${1:FRAGMENT_NAME} = graphql`",
+      "fragment ${1} on ${2:Query} {",
+      "${3:strapiGlobal { \\}}",
+      "}",
+      "`"
+    ]
+  },
+
+  "Default page with Strapi content": {
+    "scope": "javascript,typescript,typescriptreact",
+    "prefix": "default page strapi",
+    "body": [
+      "import { memo } from \"react\"",
+      "import { HeadFC, PageProps, graphql } from \"gatsby\"",
+      "import { PageLayout } from '../components'",
+      "",
+      "export const Page${1/(.*)/${1:/capitalize}/} = memo(",
+      "({ data }: PageProps<Queries.Page${1/(.*)/${1:/capitalize}/}Query>) => {",
+      "return <PageLayout>{JSON.stringify(data.strapiGlobal)}</PageLayout>",
+      "}",
+      ")",
+      "Page${1/(.*)/${1:/capitalize}/}.displayName = \"Page${1/(.*)/${1:/capitalize}/}\"",
+      "",
+      "export const Head: HeadFC = () => <title>${1/(.*)/${1:/capitalize}/}</title>",
+      "",
+      "export const query = graphql`",
+      "  query Page${1/(.*)/${1:/capitalize}/} {",
+      "    strapiGlobal {",
+      "      createdAt",
+      "      publishedAt",
+      "      updatedAt",
+      "    }",
+      "  }",
+      "`",
+      "// eslint-disable-next-line import/no-default-export",
+      "export default Page${1/(.*)/${1:/capitalize}/}"
+    ],
+    "description": "simple page file"
+  },
+  "Styled-Component ContentContainer": {
+    "scope": "typescriptreact",
+    "prefix": "scon contentcontainer",
+    "body": ["const $1 = styled(ContentContainer)`", "$2", "`"]
+  }
+}
