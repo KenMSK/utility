@@ -1,11 +1,15 @@
+/**
+ * Display a strapi image in Gatsby. Query the data by graphiql.
+ */
+
 import {
   GatsbyImage,
   GatsbyImageProps,
   IGatsbyImageData,
-} from 'gatsby-plugin-image'
-import { memo } from 'react'
-import { DeepNullable } from '../util'
-import { styled } from 'styled-components'
+} from "gatsby-plugin-image"
+import { memo } from "react"
+import { DeepNullable } from "../util"
+import { styled } from "styled-components"
 
 const NoHighlightImage = styled(GatsbyImage)`
   & img {
@@ -26,13 +30,13 @@ export type StrapiImageData = null | DeepNullable<{
   }
 }>
 
-type StrapiImagePropType = Partial<Omit<GatsbyImageProps, 'image'>> & {
+type StrapiImagePropType = Partial<Omit<GatsbyImageProps, "image">> & {
   strapiImage?: StrapiImageData
   isRequired?: boolean
 }
 
 export const StrapiImage = memo<StrapiImagePropType>(
-  ({ strapiImage, alt = '', className, isRequired = false, ...others }) => {
+  ({ strapiImage, alt = "", className, isRequired = false, ...others }) => {
     const gatsbyImage = strapiImage?.localFile?.childImageSharp?.gatsbyImageData
     if (gatsbyImage) {
       return (
@@ -47,9 +51,9 @@ export const StrapiImage = memo<StrapiImagePropType>(
     }
     if (isRequired) {
       console.error(strapiImage, JSON.stringify(strapiImage, null, 2))
-      throw new Error('Required image is missing: ')
+      throw new Error("Required image is missing: ")
     }
     return null
-  },
+  }
 )
-StrapiImage.displayName = 'StrapiImage'
+StrapiImage.displayName = "StrapiImage"
