@@ -1,72 +1,43 @@
+/**
+ * Add prefix and suffix to each string in an object and its children
+ * @param objectOfStrings object of Strings to be wrapped
+ * @param prefix Adds prefix to each string
+ * @param suffix adds suffix to each string
+ * @returns object of Strings wrapped with prefix and suffix
+ */
 export function DeepWrap<T>(
-  childPaths: T,
+  objectOfStrings: T,
   prefix: string = "",
   suffix: string = ""
 ): T {
-  if (typeof childPaths === "string") {
-    return (prefix + childPaths + suffix) as T
+  if (typeof objectOfStrings === "string") {
+    return (prefix + objectOfStrings + suffix) as T
   }
-  return Object.keys(childPaths as Object).reduce((acc, i) => {
-    return {
-      ...acc,
-      [i]: DeepWrap(childPaths[i as keyof typeof childPaths], prefix, suffix),
-    }
-  }, {}) as T
+  if (typeof objectOfStrings === "object" && objectOfStrings !== null) {
+    return Object.keys(objectOfStrings as Object).reduce((acc, i) => {
+      return {
+        ...acc,
+        [i]: DeepWrap(
+          objectOfStrings[i as keyof typeof objectOfStrings],
+          prefix,
+          suffix
+        ),
+      }
+    }, {}) as T
+  }
+  // unexpected use case but should not cause error
+  return objectOfStrings
 }
 
+/* examples
 const partners = {
   AIA: "AIA logo",
-  CIC: "CIC logo",
-  ey: "EY_logo_2019",
-  manulife: "Manulife-logo",
-  ubs: "UBS-logo",
-  lian: "利安logo",
-  anz: "ANZ-Logo",
-  citi: "CIti logo",
-  jtc: "JTC_logo",
-  pwc: "Pwc logo",
-  ubaby: "Ubaby logo",
-  daisan: "大新銀行",
-  alliance: "Alliance Capital Partners logo",
-  combokid: "Combokid logo",
-  kcbh_logo: "KCBH_logo",
-  sesg: "SESG",
-  vp_bank_logo: "VP_Bank_Logo",
-  kaisi: "凱施餅店logo",
-  bankofsingapore: "Bank of Singapore logo",
-  deloitte: "Deloitte-Logo",
-  kpmg: "KPMG-logo",
-  tmf_group: "TMF_Group",
-  bea: "bea-logo",
-  meiso: "美素佳兒logo",
 }
 const partnersPaths = DeepWrap(partners, "partners/", ".png")
 
 const business = {
   // order by file name
   analyze: "analyze",
-  baby: "baby-face",
-  bank: "bank",
-  bill: "Bill",
-  businessman: "businessman-svg",
-  checklist: "checklist",
-  currency: "currency-exchange",
-  goal: "goal",
-  account: "merchant-account",
-  medical: "medical-bag",
-  mommy: "mommy-and-me-classes",
-  moneyPig: "money-box",
-  money: "money-cycle",
-  oldman: "old-man",
-  organization: "organization",
-  protect: "protect",
-  mask: "protection-mask",
-  staff: "staff-svg",
-  survey: "survey",
-  tax: "tax-svg",
-  techsupport: "technical-support",
-  timetable: "Timetable",
-  tree: "tree-structure",
   partners,
 }
 
@@ -95,15 +66,6 @@ const aboutUs = {
 
 const photo = {
   photo1: "Team1",
-  photo2: "Team2",
-  photo3: "Team3",
-  photo4: "Team4",
-  photo5: "Team5",
-  photo6: "Team6",
-  photo7: "Team7",
-  photo8: "Team8",
-  photo9: "Team9",
-  photo10: "Team10",
 }
 
 const mediaPath = DeepWrap(media, "/media/", ".png")
@@ -123,3 +85,5 @@ export const resourcePaths = {
   sample: "/Sample.png",
   teamPhoto: photoPath,
 } as const
+
+*/
