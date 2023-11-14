@@ -1,6 +1,6 @@
 /**
  * Add prefix and suffix to each string in an object and its children
- * @param objectOfStrings object of Strings to be wrapped
+ * @param objectOfStrings object/array of Strings to be wrapped
  * @param prefix Adds prefix to each string
  * @param suffix adds suffix to each string
  * @returns object of Strings wrapped with prefix and suffix

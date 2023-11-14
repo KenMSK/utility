@@ -3,8 +3,16 @@ export async function asyncForEach<T>(
   callback: (item: T, index: number, array: T[]) => any
 ) {
   for (let index = 0; index < array.length; index++) {
-    // eslint-disable-next-line no-await-in-loop
-    await callback(array[index], index, array)
+    try {
+      // eslint-disable-next-line no-await-in-loop
+      await callback(array[index], index, array)
+    } catch (error) {
+      console.error(
+        `asyncForEach: Error processing item at index ${index}: ${array[index]}`,
+        error
+      )
+      throw error
+    }
   }
 }
 
@@ -45,46 +53,24 @@ export async function parallelForEach<T, ResultType>(
   ) => Promise<ResultType> | ResultType,
   maxThread: number = 8
 ) {
-  const maxItem = targetArray.length
-  let progressCount = -1
-  const threadToStart = Math.min(maxItem, maxThread)
-  let allSettlements = [] as PromiseSettledResult<Awaited<ResultType>>[][]
+  let index = 0
+  const results: ResultType[] = []
+  const runningPromises: Promise<void>[] = []
 
-  const callbackIterate = async () => {
-    progressCount++
-    if (progressCount < maxItem) {
-      const callbackAndNext = async () => {
-        try {
-          const r = await callback(
-            targetArray[progressCount],
-            progressCount,
-            targetArray
-          )
-          return r
-        } finally {
-          callbackIterate()
-        }
-      }
-
-      allSettlements.push(await Promise.allSettled([callbackAndNext()]))
-    }
+  const run: (index: number) => Promise<void> = async (i: number) => {
+    if (i >= targetArray.length) return
+    const item = targetArray[i]
+    const result = await callback(item, i, targetArray)
+    results[i] = result
+    index++
+    return run(index)
   }
 
-  for (let i = 0; i < threadToStart; i++) {
-    callbackIterate()
+  for (let i = 0; i < maxThread; i++) {
+    runningPromises.push(run(index++))
   }
 
-  const allPromises = allSettlements.map((result) => result[0])
-  const fulfilledValues = (
-    allPromises.filter(
-      (p) => p.status === "fulfilled"
-    ) as PromiseFulfilledResult<ResultType>[]
-  ).map((p) => p.value)
-  const rejectedReasons = (
-    allPromises.filter(
-      (p) => p.status === "rejected"
-    ) as PromiseRejectedResult[]
-  ).map((p) => p.reason)
+  await Promise.all(runningPromises)
 
-  return { allPromises, fulfilledValues, rejectedReasons }
+  return results
 }
