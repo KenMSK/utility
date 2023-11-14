@@ -13,6 +13,11 @@ export function DeepWrap<T>(
   if (typeof objectOfStrings === "string") {
     return (prefix + objectOfStrings + suffix) as T
   }
+  if (Array.isArray(objectOfStrings)) {
+    return (objectOfStrings as unknown[]).map((item) =>
+      DeepWrap(item, prefix, suffix)
+    ) as T
+  }
   if (typeof objectOfStrings === "object" && objectOfStrings !== null) {
     return Object.keys(objectOfStrings as Object).reduce((acc, i) => {
       return {
