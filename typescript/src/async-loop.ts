@@ -41,6 +41,11 @@ export async function allSettleForEach<T, ResultType>(
   return { allPromises, fulfilledValues, rejectedReasons }
 }
 
+type AsyncResult<ResultType> = {
+  status: "fulfilled" | "rejected"
+  value?: ResultType
+  error?: any
+}
 /**
  * for loop aysnc, run them in parallel but limit the thread that runs
  * */
@@ -52,16 +57,27 @@ export async function parallelForEach<T, ResultType>(
     array: T[]
   ) => Promise<ResultType> | ResultType,
   maxThread: number = 8
-) {
+): Promise<AsyncResult<ResultType>[]> {
   let index = 0
-  const results: ResultType[] = []
+  const results: AsyncResult<ResultType>[] = []
   const runningPromises: Promise<void>[] = []
 
   const run: (index: number) => Promise<void> = async (i: number) => {
     if (i >= targetArray.length) return
     const item = targetArray[i]
-    const result = await callback(item, i, targetArray)
-    results[i] = result
+    try {
+      // Run Single Task in Parallel
+      const result = await callback(item, i, targetArray)
+      results[i] = {
+        status: "fulfilled",
+        value: result as ResultType,
+      }
+    } catch (error) {
+      results[i] = {
+        status: "rejected",
+        error,
+      }
+    }
     index++
     return run(index)
   }
